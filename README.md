@@ -35,7 +35,7 @@ https://www.cockos.com/licecap/
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Main challenge was working with the limited amount of API calls i can make per a day.
 
 ## License
 
