@@ -52,3 +52,15 @@ button {
 div {
   padding: .5rem;
 }
+nav {
+  position: fixed; 
+  top: 0; 
+  right: 0; 
+}
+
+.home-link 
+{
+  border:1px dotted black;
+  background:white;
+  width:75px;
+}

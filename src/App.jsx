@@ -2,6 +2,9 @@ const ACCESS_KEY = import.meta.env.VITE_APP_ACCESS_KEY;
 import './App.css'
 import { useState, useEffect } from 'react'
 import Dropdown from "./Components/dropdown"
+import { Link } from "react-router-dom";
+import React, { PureComponent } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function App() {
 
@@ -31,6 +34,7 @@ function App() {
     };
     callAPI().catch(console.error);
   }, []);
+
   const searchItems = searchValue => {
     setSearchInput(searchValue);
     if(Veggie && popular)
@@ -118,12 +122,17 @@ function App() {
         setFilteredResults(Object.keys(recipes));
     }
   };
+
+
   const Vegan = () => {
     setVeggie(!Veggie)
   };
+
   const Pop = () => {
     setPopular(!popular)
   };
+
+
   const priceAvg = () => {
     recipes.map(function(item) {
         x+= item.pricePerServing
@@ -141,6 +150,18 @@ const timeAvg = () => {
         z+= item.readyInMinutes
     })
     setTime(z/10)
+}
+
+const cleanData = () => {
+  let chartData = []
+  recipes.map(function(item) {
+    chartData.push({
+      'name' : item.title,
+      'score':  item.healthScore
+    });
+  })
+
+  return chartData;
 }
   return (
     <>
@@ -166,25 +187,53 @@ const timeAvg = () => {
       Click to toggle between showing Popular options only or All options
       <button onClick={Pop}>Click here!</button>
     </div>
+        <LineChart
+          width={500}
+          height={300}
+          data={cleanData()}
+          margin={{
+            top: 10,
+            right: 30,
+            left: 20,
+            bottom: 30,
+          }}
+        >
+          <CartesianGrid strokeDasharray="5 5" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="score" stroke="#82ca9d" />
+        </LineChart>
 {searchInput.length > 0 || Veggie == true || popular == true
   ? filteredResults.map(function(data) {
     return (
-      <div className='Content'>
-        <img src={data.image} />
+      <>
+      <img src={data.image} />
+      <Link
+        to={`/RecipeDetail/${data.id}`}
+        key= {data.id}>
+          
         <div>{data.title}</div>
-        {data.vegetarian? <div> This Dish is Vegentarian!</div> : <div> This Dish is not Vegentarian!</div>}
+        {data.vegetarian? <div>This Dish is Vegentarian!</div> : <div>This Dish is not Vegentarian!</div>}
         {data.veryPopular? <div> This Dish is Popular!</div> : <div> This Dish is not Popular D:</div>}
-      </div>
+      </Link>
+      </>
     )
   }) :
     recipes.map(function(data) {
       return (
-        <div className='Content'>
-          <img src={data.image} />
+        <>
+        <img src={data.image} />
+        <Link
+          to={`/RecipeDetail/${data.id}`}
+          key= {data.id}>
+            
           <div>{data.title}</div>
           {data.vegetarian? <div>This Dish is Vegentarian!</div> : <div>This Dish is not Vegentarian!</div>}
           {data.veryPopular? <div> This Dish is Popular!</div> : <div> This Dish is not Popular D:</div>}
-        </div>
+        </Link>
+        </>
       )
     })
   }
